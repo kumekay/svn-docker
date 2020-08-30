@@ -1,5 +1,5 @@
 # Alpine Linux with s6 service management
-FROM smebberson/alpine-base:3.2.0
+FROM rmurar/alpine-base:3.2.0
 
 	# Install Apache2 and other stuff needed to access svn via WebDav
 	# Install svn
@@ -21,7 +21,7 @@ RUN apk add --no-cache apache2 apache2-utils apache2-webdav mod_dav_svn &&\
 	rm stable-1.6.2.zip &&\
 	mv /opt/iF.SVNAdmin-stable-1.6.2 /opt/svnadmin &&\
 	ln -s /opt/svnadmin /var/www/localhost/htdocs/svnadmin &&\
-	chmod -R 777 /opt/svnadmin/data
+	chmod -R 777 /opt/svnadmin/data 
 
 # Solve a sicurity issue (https://alpinelinux.org/posts/Docker-image-vulnerability-CVE-2019-5021.html)	
 RUN sed -i -e 's/^root::/root:!:/' /etc/shadow
@@ -39,6 +39,8 @@ RUN chmod a+w /etc/subversion/* && chmod a+w /home/svn
 
 # Add WebDav configuration
 ADD dav_svn.conf /etc/apache2/conf.d/dav_svn.conf
+
+RUN chown -R apache:www-data /opt/svnadmin
 
 # Set HOME in non /root folder
 ENV HOME /home
